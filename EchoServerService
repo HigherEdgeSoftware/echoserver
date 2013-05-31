@@ -1,0 +1,35 @@
+#!/bin/bash
+# Modified from: http://conscs.wordpress.com/2012/05/06/creating-a-service-in-ubuntu-12-04/
+# EchoServer service startup
+# USAGE: start|stop|status
+#
+BINLOCATION=/mnt/disk/website/RadXML
+PORT=2040
+
+case "$1" in
+start)
+echo "Starting EchoServer..."
+RESULT=$(jps | grep EchoServer | awk '{print $1}')
+if [ -n "${RESULT}" ]; then
+	echo "EchoServer already running..."
+	exit 1
+fi
+nohup java -jar ${BINLOCATION}/EchoServer.jar --port=${PORT} &
+;;
+stop)
+echo "Stopping EchoServer."
+RESULT=$(jps | grep EchoServer | awk '{print $1}')
+kill ${RESULT}
+;;
+status)
+# Check to see if the process is running
+ps aux|grep -i EchoServer
+;;
+ 
+*)
+echo "EchoServer Service"
+echo $"Usage: $0 {start|stop|status}"
+exit 1
+esac
+exit 0
+
